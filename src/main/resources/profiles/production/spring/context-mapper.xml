@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="production" 
+    xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<!-- 운영환경이므로 mapper xml 파일이 수정시 자동재반영 되는 기능을 사용하지 않도록 하기 위해 기본 SqlSessionFactoryBean을 사용한다 -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath:egovframework/sqlmap/mappers/**/*.xml" />
+		<!-- @Alias 어노테이션이 붙은 패키지를 설정한다. 이 패키지가 여러개 있을 경우 ,를 구분자로 하여 여러개를 쓰면 된다 -->
+		<property name="typeAliasesPackage" value="egovframework.mybatis.vo" />
+	</bean>
+			
+</beans>	

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<!-- local에서 개발할때나 개발서버에서 테스트할때는 mapper xml 파일이 수정됐을 경우 자동으로 재반영되도록 한다 -->
+	<bean id="sqlSession" class="egovframework.mybatis.config.mybatis.RefreshableSqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath:egovframework/sqlmap/mappers/**/*.xml" />
+		<!-- @Alias 어노테이션이 붙은 패키지를 설정한다. 이 패키지가 여러개 있을 경우 ,를 구분자로 하여 여러개를 쓰면 된다 -->
+		<property name="typeAliasesPackage" value="egovframework.mybatis.vo" />
+	</bean>
+
+	<!-- @Mapper 어노테이션이 붙은 Repository 를 검색하기 위한 base package 설정 -->
+    <bean class="egovframework.rte.psl.dataaccess.mapper.MapperConfigurer">
+		<!-- property name="basePackage" value="egovframework.rte.**.mapper" / -->
+		<property name="basePackage" value="egovframework.mybatis.mapper" />
+	</bean>
+			
+</beans>	

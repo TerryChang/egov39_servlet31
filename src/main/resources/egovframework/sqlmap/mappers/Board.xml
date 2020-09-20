@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="egovframework.mybatis.mapper.BoardMapper">
+
+    <resultMap id="resultMapViewBoard" type="board">
+        <result property="idx" column="IDX" />
+        <result property="title" column="TITLE" />
+        <result property="contents" column="CONTENTS" />
+        <result property="regdate" column="REGDATE" />
+        <collection property="listUploadFileVO" ofType="upload_file">
+            <id property="idx" column="FILEIDX" />
+            <result property="boardIdx" column="BOARD_IDX" />
+            <result property="orgFileName" column="ORGFILENAME" />
+            <result property="realFileName" column="REALFILENAME" />
+            <result property="ext" column="EXT" />
+            <result property="fileSize" column="FILESIZE" />
+            <result property="regdate" column="FILEREGDATE" />
+        </collection>
+    </resultMap>
+
+
+    <select id="listBoard" parameterType="searchVO" resultType="board">
+        SELECT IDX, TITLE, CONTENTS, REGDATE
+        FROM BOARD
+        <where>
+            <if test="(searchType == null or searchType == '') and searchWord != null">
+                TITLE like '%' || #{searchWord} || '%' OR CONTENTS like '%' || #{searchWord} || '%'
+            </if>
+            <if test="searchType == 'title' and searchWord != null">
+                TITLE like '%' || #{searchWord} || '%'
+            </if>
+            <if test="searchType == 'contents' and searchWord != null">
+                CONTENTS like '%' || #{searchWord} || '%'
+            </if>
+        </where>
+        ORDER BY IDX DESC
+        LIMIT #{pageSize} OFFSET (#{pageNo} - 1) * #{pageSize}
+    </select>
+
+    <select id="countBoard" parameterType="searchVO" resultType="int">
+        SELECT COUNT(IDX)
+        FROM BOARD
+        <where>
+            <if test="(searchType == null or searchType == '') and searchWord != null">
+                TITLE like '%' || #{searchWord} || '%' OR CONTENTS like '%' || #{searchWord} || '%'
+            </if>
+            <if test="searchType == 'title' and searchWord != null">
+                TITLE like '%' || #{searchWord} || '%'
+            </if>
+            <if test="searchType == 'contents' and searchWord != null">
+                CONTENTS like '%' || #{searchWord} || '%'
+            </if>
+        </where>
+    </select>
+
+    <select id="viewBoard" parameterType="long" resultMap="resultMapViewBoard">
+        SELECT A.IDX AS IDX, A.TITLE AS TITLE, A.CONTENTS AS CONTENTS, A.REGDATE AS REGDATE
+            , B.IDX AS FILEIDX, B.BOARD_IDX AS BOARD_IDX, B.ORGFILENAME AS ORGFILENAME, B.REALFILENAME AS REALFILENAME, B.EXT AS EXT, B.FILESIZE AS FILESIZE, B.REGDATE AS FILEREGDATE
+        FROM BOARD A LEFT OUTER JOIN UPLOAD_FILE B ON A.IDX = B.BOARD_IDX
+        WHERE A.IDX = #{idx}
+        ORDER BY FILEIDX ASC
+    </select>
+
+	<!--
+	BoardMapper.java의 viewBoardOptional 메소드에 주석으로 설명했음
+	-->
+	<!-- 
+    <select id="viewBoardOptional" parameterType="long" resultType="board">
+        SELECT IDX, TITLE, CONTENTS, REGDATE
+        FROM BOARD
+        WHERE IDX=#{idx}
+    </select>
+    -->
+    
+    <insert id="insertBoard" useGeneratedKeys="true" keyProperty="idx" parameterType="board">
+        INSERT INTO BOARD(TITLE,CONTENTS, REGDATE)
+        VALUES(#{title}, #{contents}, current_timestamp)
+    </insert>
+
+    <update id="updateBoard" parameterType="board">
+        UPDATE BOARD SET TITLE=#{title}, CONTENTS=#{contents}
+        WHERE IDX=#{idx}
+    </update>
+
+    <delete id="deleteBoard">
+        DELETE FROM BOARD
+        <where>
+            IDX IN
+            <foreach collection="array" item="idx" index="index" separator="," open="(" close=")">
+                #{idx}
+            </foreach>
+        </where>
+    </delete>
+
+</mapper>

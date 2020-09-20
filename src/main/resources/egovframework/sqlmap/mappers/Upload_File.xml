@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="egovframework.mybatis.mapper.UploadFileMapper">
+    
+    <!-- 게시물 idx 값을 이용해서 해당 게시물에 있는 파일 리스트를 얻어온다. 이때 게시물 idx, 파일 idx 순으로 정렬한다 -->
+    <select id="listUploadFileByBoardIdxs" resultType="upload_file">
+        SELECT IDX, BOARD_IDX, ORGFILENAME, REALFILENAME, EXT, FILESIZE, REGDATE
+        FROM UPLOAD_FILE
+        <where>
+            BOARD_IDX IN
+            <foreach collection="array" item="boardIdx" index="index" separator="," open="(" close=")">
+                #{boardIdx}
+            </foreach>
+        </where>
+        ORDER BY BOARD_IDX, IDX
+    </select>
+
+    <!-- 업로드된 파일을 여러건 삭제하게 될 경우 사용자가 삭제를 선택한 파일의 idx 값들만 이용해서 대상목록을 조회하는 쿼리를 사용해야 한다 -->
+    <!-- 
+    <select id="listUploadFileByIdxs" resultType="upload_file">
+        SELECT IDX, BOARD_IDX, ORGFILENAME, REALFILENAME, EXT, FILESIZE, REGDATE
+        FROM UPLOAD_FILE
+        <where>
+            IDX IN
+            <foreach collection="array" item="idx" index="index" separator="," open="(" close=")">
+                #{idx}
+            </foreach>
+        </where>
+    </select>
+    -->
+    
+    <select id="viewUploadFile" parameterType="long" resultType="upload_file">
+        SELECT IDX, BOARD_IDX, ORGFILENAME, REALFILENAME, EXT, FILESIZE, REGDATE
+        FROM UPLOAD_FILE
+        WHERE IDX = #{idx}
+    </select>
+
+    <insert id="insertUploadFile" useGeneratedKeys="true" keyProperty="idx" parameterType="upload_file">
+        INSERT INTO UPLOAD_FILE(BOARD_IDX, ORGFILENAME, REALFILENAME, EXT, FILESIZE, REGDATE)
+        VALUES(#{boardIdx}, #{orgFileName}, #{realFileName}, #{ext}, #{fileSize}, current_timestamp)
+    </insert>
+
+    <!-- 
+    <delete id="deleteUploadFileByIdxs">
+        DELETE FROM UPLOAD_FILE
+        <where>
+            IDX IN
+            <foreach collection="array" item="idx" index="index" separator="," open="(" close=")">
+                #{idx}
+            </foreach>
+        </where>
+    </delete>
+    -->
+    
+    <!--  
+    <delete id="deleteUploadFileByBoardIdx" parameterType="long">
+        DELETE FROM UPLOAD_FILE
+        WHERE BOARD_IDX = #{boardIdx}
+    </delete>
+    -->
+    
+    <delete id="deleteUploadFileByIdx" parameterType="long">
+        DELETE FROM UPLOAD_FILE
+        WHERE IDX = #{idx}
+    </delete>
+    
+    <delete id="deleteUploadFileByBoardIdxs">
+        DELETE FROM UPLOAD_FILE
+        <where>
+            BOARD_IDX IN
+            <foreach collection="array" item="boardIdx" index="index" separator="," open="(" close=")">
+                #{boardIdx}
+            </foreach>
+        </where>
+    </delete>
+
+    
+</mapper>

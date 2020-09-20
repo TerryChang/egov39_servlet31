@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <title>게시판</title>
+    <style>
+        tr.text-center th {
+            text-align: center;
+        }
+
+        tr.text-center td {
+            text-align: center;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css"
+          href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap-theme.min.css}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"
+            th:src="@{/webjars/jquery/1.11.1/jquery.min.js}"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        /* <![CDATA[ */
+        $(document).ready(function () {
+            // ajax 작업시 캐쉬를 사용하지 않도록 한다
+            $.ajaxSetup({cache: false, async: false});
+
+            $("#regbtn").click(function () {
+                if ($("#title").val() == "") {
+                    alert("제목을 작성해주세요");
+                    $("#title").focus();
+                } else if ($("#contents").val() == "") {
+                    alert("내용을 작성해주세요");
+                    $("#contents").focus();
+                } else {
+                    $("#form").submit();
+                }
+            });
+
+            $("#resetbtn").click(function () {
+                $("#form")[0].reset();
+            });
+
+            $("#listbtn").click(function () {
+
+            });
+        });
+
+        /* ]]> */
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1><span>게시판 수정</span></h1>
+    <form id="form" th:action="@{/board/update}" method="post" th:object="${board}">
+        <input type="hidden" id="idx" name="idx" th:field="*{idx}"/>
+        <table class="table table-bordered" style="table-layout: fixed">
+            <tr>
+                <td class="text-center col-md-2">제목</td>
+                <td class="col-md-10">
+                    <input type="text" id="title" name="title" class="form-control" placeholder="제목을 작성해주세요"
+                           th:field="*{title}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">내용</td>
+                <td>
+                    <textarea class="form-control" id="contents" name="contents" th:field="*{contents}" th:rows="20"
+                              th:cols="80" placeholder="내용을 작성해주세요"></textarea>
+                </td>
+            </tr>
+        </table>
+        <div class="text-center">
+            <a id="regbtn" class="btn btn-default">등록</a>
+            <a id="resetbtn" class="btn btn-default">재작성</a>
+            <a id="listbtn" class="btn btn-default">목록</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
