@@ -18,16 +18,21 @@
         tr.text-center td {
             text-align: center;
         }
+        
+        .table.no-border tr td, .table.no-border tr th {
+            border-width: 0;
+        }
     </style>
     <link rel="stylesheet" type="text/css" href="<c:url value="/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css" />" />
     <link rel="stylesheet" type="text/css" href="<c:url value="/webjars/bootstrap/3.3.7-1/css/bootstrap-theme.min.css" />" />
+    <link rel="stylesheet" type="text/css" href="/css/progressbar.css" />
     <script src="<c:url value="/webjars/jquery/1.11.1/jquery.min.js" />" ></script>
     <script src="<c:url value="/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js" />" ></script>
     <script type="text/javascript">
         /* <![CDATA[ */
         $(document).ready(function () {
             // ajax 작업시 캐쉬를 사용하지 않도록 한다
-            $.ajaxSetup({cache: false, async: false});
+            $.ajaxSetup({cache: false});
 
             $("#regbtn").click(function () {
             	if ($("#title").val() == "") {
