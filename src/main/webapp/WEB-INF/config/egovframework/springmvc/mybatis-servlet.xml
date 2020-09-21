@@ -44,6 +44,23 @@
         -->
     </mvc:annotation-driven>
     
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**" />
+            <bean class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+                <property name="cacheSeconds" value="0" />
+                <!-- 현재의 cache 정책에 예외적인 url을 설정하려 할 경우 cacheMappings property 설정  -->
+                <!-- 
+                <property name="cacheMappings">
+                    <props>
+                        <prop key="/api/photo/**">86400</prop>
+                    </props>
+                </property>
+                -->
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+    
     <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
         <property name="converters">
             <set>

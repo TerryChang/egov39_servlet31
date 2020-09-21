@@ -99,7 +99,7 @@
                 let orgfilename = $(this).data("orgfilename");
                 
                 if(confirm("클릭하신 " + orgfilename + "을 삭제하시겠습니까?")) {
-                	deleteFile(idx, orgfilename);
+                	deleteFile(this, idx, orgfilename);
                 }
             });
             
@@ -155,7 +155,7 @@
                 data: formData,
                 processData: false,
                 contentType: false,
-                beforeSend: function() {
+                beforeSend: function(xhr) {
                     if(existFile) {
                         // progress Modal 열기
                         $("#pleaseWaitDialog").modal("show");
@@ -179,25 +179,24 @@
             });
         }
         
-        function deleteFile(idx, orgFileName){
+        function deleteFile(delFileIcon, idx, orgFileName){
             // let formData = new FormData();
             // formData.append("idx", idx);
             
-            let formData = {idx : idx};
-            // formData["idx"] = idx;
-            let jsonFormData = JSON.stringify(formData);
+            let formData = {"idx" : idx};
             
             $.ajax({
                 type: "POST",
                 url: "/board/deleteFile.do",
                 dataType: "json",
-                data: jsonFormData,
-                // processData: false,
-                // contentType: false,
-                contentType: "application/json; charset=utf-8;",
+                data: formData,
                 success: function(result) {
                     alert(orgFileName + " 파일이 삭제되었습니다");
+                    $(delFileIcon).parent().remove();
                     
+                    if($("#currentFileTd div").length == 0) {
+                    	$("#currentFileTd").html("업로드된 파일이 없습니다.")
+                    }
                 },
                 error: function(xhr, ajaxSettings, throwError) {
                 	alert(orgFileName + " 파일 삭제에 실패했습니다");
@@ -230,15 +229,14 @@
                 첨부파일
                 <button type="button" id="addFile" class="btn btn-default">추가</button>
                 </td>
-                <td>
+                <td id="currentFileTd">
                     <c:choose>
                         <c:when test="${!empty board.listUploadFileVO}">
                             <c:forEach var="uploadFile" items="${board.listUploadFileVO}" varStatus="status">
-                                <span><c:out value="${uploadFile.orgFileName }" /> (<c:out value="${uploadFile.fileSize}" />)bytes</span>
-                                <span class="glyphicon glyphicon-remove" data-idx="<c:out value="${uploadFile.idx}"/>" data-orgfilename="<c:out value="${uploadFile.orgFileName}"/>"></span>
-                                <c:if test="${status.last == false}">
-                                    <br/>
-                                </c:if>
+                                <div>
+                                    <span><c:out value="${uploadFile.orgFileName }" /> (<c:out value="${uploadFile.fileSize}" />)bytes</span>
+                                    <span class="glyphicon glyphicon-remove" data-idx="<c:out value="${uploadFile.idx}"/>" data-orgfilename="<c:out value="${uploadFile.orgFileName}"/>"></span>
+                                </div>
                             </c:forEach>    
                         </c:when>
                         <c:otherwise>

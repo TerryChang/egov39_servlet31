@@ -7,8 +7,7 @@
 <%@ taglib prefix="javatime" uri="http://sargue.net/jsptags/time" %>
 <% pageContext.setAttribute("LF", "\n"); %>
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>게시판</title>
@@ -25,7 +24,7 @@
 
         tr.text-center td {
             text-align: center;
-        }
+        }o
     </style>
     <script type="text/javascript" th:inline="javascript">
         /* <![CDATA[ */
@@ -92,7 +91,6 @@
                         <c:when test="${!empty board.listUploadFileVO}">
                             <c:forEach var="uploadFile" items="${board.listUploadFileVO}" varStatus="status">
                                 <span><c:out value="${uploadFile.orgFileName }" /> (<c:out value="${uploadFile.fileSize}" />)bytes</span>
-                                <span class="glyphicon glyphicon-remove"></span>
                                 <c:if test="${status.last == false}">
                                     <br/>
                                 </c:if>
